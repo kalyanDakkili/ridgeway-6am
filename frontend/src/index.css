@@ -1,0 +1,123 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-primary:    #08090d;
+  --bg-secondary:  #0d1117;
+  --bg-card:       #111620;
+  --bg-card-hover: #172030;
+  --border:        #1a2940;
+  --border-bright: #253d58;
+  --accent-blue:   #00a8ff;
+  --accent-green:  #00e676;
+  --accent-yellow: #ffd600;
+  --accent-red:    #ff1744;
+  --accent-orange: #ff6d00;
+  --accent-purple: #e040fb;
+  --text-primary:  #ddeeff;
+  --text-secondary:#6a8099;
+  --text-dim:      #2e4560;
+  --font-mono: 'Space Mono', monospace;
+  --font-sans: 'Inter', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body, #root {
+  height: 100vh;
+  overflow: hidden;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+}
+
+#root { display: flex; flex-direction: column; }
+
+/* Scrollbars */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 2px; }
+
+/* Leaflet dark overrides */
+.leaflet-container {
+  background: #060a12 !important;
+  font-family: var(--font-sans) !important;
+}
+.leaflet-tile {
+  filter: brightness(0.35) saturate(0.2) hue-rotate(185deg) !important;
+}
+.leaflet-control-zoom a {
+  background: var(--bg-card) !important;
+  color: var(--text-secondary) !important;
+  border-color: var(--border) !important;
+}
+.leaflet-control-attribution { display: none !important; }
+
+/* Dark tooltips */
+.leaflet-tooltip {
+  background: rgba(8, 9, 13, 0.95) !important;
+  border: 1px solid #253d58 !important;
+  border-radius: 4px !important;
+  color: #ddeeff !important;
+  font-family: 'Space Mono', monospace !important;
+  font-size: 11px !important;
+  padding: 5px 10px !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.7) !important;
+  white-space: nowrap !important;
+}
+.leaflet-tooltip::before,
+.leaflet-tooltip-top::before { border-top-color: #253d58 !important; }
+.leaflet-tooltip-bottom::before { border-bottom-color: #253d58 !important; }
+.leaflet-tooltip-left::before  { border-left-color:  #253d58 !important; }
+.leaflet-tooltip-right::before { border-right-color: #253d58 !important; }
+
+.leaflet-popup-content-wrapper {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-bright) !important;
+  border-radius: 6px !important;
+  color: var(--text-primary) !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.7) !important;
+}
+.leaflet-popup-tip { background: var(--bg-card) !important; }
+.leaflet-popup-close-button { color: var(--text-secondary) !important; }
+
+/* ── Animations ── */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(1.4); }
+}
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slide-in {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+@keyframes scan {
+  0%   { transform: translateY(-100%); opacity: 0; }
+  50%  { opacity: 0.5; }
+  100% { transform: translateY(100%); opacity: 0; }
+}
+
+.animate-fade-in-up { animation: fade-in-up 0.3s ease forwards; }
+.animate-slide-in   { animation: slide-in 0.25s ease forwards; }
+.animate-blink      { animation: blink 1s step-end infinite; }
+
+/* ── Status badges ── */
+.badge-harmless  { background: rgba(0,230,118,0.1);  color: #00e676; border: 1px solid rgba(0,230,118,0.35); }
+.badge-monitor   { background: rgba(255,214,0,0.1);  color: #ffd600; border: 1px solid rgba(255,214,0,0.35); }
+.badge-escalate  { background: rgba(255,23,68,0.1);  color: #ff1744; border: 1px solid rgba(255,23,68,0.35); }
+.badge-unreviewed{ background: rgba(100,128,160,0.1);color: #6a8099; border: 1px solid rgba(100,128,160,0.25); }
+
+/* ── Severity ── */
+.sev-high   { color: #ff1744; }
+.sev-medium { color: #ffd600; }
+.sev-low    { color: #00e676; }
