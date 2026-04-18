@@ -2,31 +2,46 @@
 
 An AI-first overnight security intelligence platform for Ridgeway Site. Built for the Skylark Drones Founding Full Stack Engineer assignment.
 
+## Live Demo
+
+| | URL |
+|---|---|
+| **App** | https://ridgeway-6am.vercel.app |
+| **API** | https://ridgeway-6am.onrender.com/api/health |
+| **Write-up** | See [WRITEUP.md](./WRITEUP.md) |
+
+> **Note:** Backend runs on Render free tier — if the investigation takes ~30 seconds on first load, wait for the backend to wake up then try again.
+
+---
+
 ## What It Does
 
 Maya arrives at 6:10 AM to a screen full of overnight signals. ARIA (the AI agent) automatically investigates them all — cross-referencing fence alerts, badge failures, vehicle movements, and drone patrol data — then produces a structured morning briefing ready for Nisha's 8 AM review.
 
 **Key features:**
-- 🤖 **Real AI agent loop** — ARIA uses Claude claude-sonnet-4-20250514 with 5 MCP-style tools in a full agentic loop (tool calls → results → reasoning → briefing)
-- 🗺️ **Live site map** — dark Leaflet map with event markers, severity colours, and animated drone patrol path
+- 🤖 **Real AI agent loop** — ARIA uses Claude (via OpenRouter) with 5 MCP-style tools in a full agentic loop (tool calls → results → reasoning → briefing)
+- 🗺️ **Live site map** — dark Leaflet map with event markers, severity colours, and drone patrol path overlay
 - 🚁 **Drone patrol replay** — step-by-step waypoint simulation of PAT-2024-047
-- 📋 **Human review layer** — Maya can override any AI classification and add notes before approving
+- 📋 **Human review layer** — Maya can override any AI classification, add notes, and approve the briefing
 - ⏱️ **Live countdown** to Nisha's 8:00 AM arrival
 - 📡 **SSE streaming** — agent reasoning streams live to the UI as it runs
 
 ---
 
-## Quick Start
+## Quick Start (Local)
 
 ### Prerequisites
 - Java 17+
 - Maven 3.8+
 - Node.js 18+
-- An Anthropic API key
+- OpenRouter API key (openrouter.ai)
 
-### 1. Set your API key
+### 1. Set environment variables
 ```bash
-export ANTHROPIC_API_KEY=sk-ant-YOUR_KEY_HERE
+export ANTHROPIC_BASE_URL=https://openrouter.ai/api
+export ANTHROPIC_AUTH_TOKEN=your-openrouter-key-here
+export ANTHROPIC_API_KEY=
+export ANTHROPIC_MODEL=anthropic/claude-3.5-haiku
 ```
 
 ### 2. Start the backend
@@ -57,7 +72,7 @@ ridgeway-6am/
 │   └── src/main/java/com/ridgeway/
 │       ├── agent/
 │       │   ├── AgentService.java      # Agentic loop (tool call → result → loop)
-│       │   └── AnthropicClient.java   # Claude API HTTP client
+│       │   └── AnthropicClient.java   # Claude API HTTP client (OpenRouter compatible)
 │       ├── tools/
 │       │   └── ToolRegistry.java      # 5 MCP-style tools
 │       ├── api/
@@ -67,7 +82,7 @@ ridgeway-6am/
 │       │   └── SeedDataLoader.java    # 8 seeded overnight events + drone waypoints
 │       └── model/                     # Event, AgentStep, BriefingReport
 │
-└── frontend/                   # React + Vite + Leaflet
+└── frontend/                   # React 18 + Vite + Leaflet
     └── src/
         ├── components/
         │   ├── TopBar.jsx             # Clock + countdown + start button
@@ -83,6 +98,8 @@ ridgeway-6am/
             └── backendApi.js          # API + SSE client
 ```
 
+---
+
 ## The 5 Tools (MCP-style)
 
 | Tool | What it returns |
@@ -91,7 +108,9 @@ ridgeway-6am/
 | `get_badge_swipes` | Failed swipes + employee context, badge fault tickets, supervisor note |
 | `get_vehicle_movements` | Entry/exit logs + policy context, guard notes, CCTV status |
 | `get_drone_patrol_log` | Patrol PAT-2024-047 with waypoints + critical and clear findings |
-| `generate_briefing` | Accepts full structured briefing from ARIA, stores for Maya |
+| `generate_briefing` | Accepts full structured briefing from ARIA, stores for Maya's review |
+
+---
 
 ## The Overnight Story
 
@@ -103,4 +122,16 @@ ridgeway-6am/
 - **EVT-007** 🚨 Drone finds Block C east door OPEN (DOOR-C-E2)
 - **EVT-008** Unknown vehicle exits main gate 3h19m later
 
-ARIA connects these dots — the badge failures at Block C + the open door found by the drone are almost certainly related.
+ARIA connects these dots — the badge failures at Block C and the open door found by the drone are almost certainly related.
+
+---
+
+## Stack
+
+| Layer | Technology |
+|---|---|
+| Backend | Spring Boot 3.2, Java 17, WebFlux (SSE) |
+| AI | Anthropic Claude via OpenRouter |
+| Frontend | React 18, Vite, Leaflet, Tailwind CSS |
+| Data | Seeded in-memory (SeedDataLoader.java) |
+| Deployment | Render (backend) + Vercel (frontend) |
